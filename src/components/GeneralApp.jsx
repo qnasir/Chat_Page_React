@@ -15,7 +15,7 @@ function GeneralApp() {
         <Chats />
 
         {/* Conversation */}
-        <Box sx={{ height: "100%", width: "calc(100vw - 394px)", height: "100%", overflowY: "scroll", '&::-webkit-scrollbar': {display: 'none'} ,backgroundColor: isToggled ? "#F0F4FA" : "#1F2631"}}>
+        <Box sx={{ height: "100%", width: "calc(100vw - 394px)" ,backgroundColor: isToggled ? "#F0F4FA" : "#1F2631"}}>
             <Conversation />
         </Box>
 
