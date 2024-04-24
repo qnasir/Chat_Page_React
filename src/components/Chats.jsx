@@ -121,7 +121,7 @@ const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
     const {isToggled} = useContext(AppContext)
 
     return (
-        <Box p={2} sx={{ width: "90%", borderRadius: 1, backgroundColor: isToggled ? "#fff" : "#171A21" }}>
+        <Box p={2} sx={{ width: "90%", borderRadius: 1, backgroundColor: isToggled ? "#fff" : "#1F2631" }}>
             <Stack direction="row" alignItems={"center"} justifyContent="space-between">
                 <Stack direction="row" spacing={2}>
                     {online ? <StyledBadge overlap="circular" anchorOrigin={{ vertical: "bottom", horizontal: "right" }} variant="dot" >
@@ -181,7 +181,7 @@ function Chats() {
     const {isToggled} = useContext(AppContext)
 
     return (
-        <Box sx={{ position: "relative",  width: 382, backgroundColor: isToggled ? "#F8FAFF" : "#1F2631" , boxShadow: "0px 0px 2px rgba(0, 0, 0, 025)" }}>
+        <Box sx={{ position: "relative",  width: 312, backgroundColor: isToggled ? "#F8FAFF" : "#171A21" , boxShadow: "0px 0px 2px rgba(0, 0, 0, 025)" }}>
             <Stack p={3} spacing={2} sx={{ height: "calc(100vh - 48px)" }} >
                 <Stack direction="row" alignItems={"center"} justifyContent="space-between">
                     <Typography sx={{ color: isToggled ? "#000" : "#fff" }} variant="h5">
@@ -204,9 +204,11 @@ function Chats() {
                         <ArchiveBox color={isToggled ? '#000' : '#fff'} size={24} />
                         <Button>Archive</Button>
                     </Stack>
-                    <Divider />
+                    <Divider color={isToggled ? "#D3D3D3" : "#2F4F4F"} />
                 </Stack>
-                <Stack spacing={2} direction="column" sx={{ flexGrow: 1, overflow: "scroll", height: "100%" }} >
+                <Stack spacing={2} direction="column" sx={{ flexGrow: 1, overflow: "scroll", height: "100%", '&::-webkit-scrollbar': {
+                    display: 'none'
+                } }} >
                     <Stack spacing={2.4}>
                         <Typography variant='subtitle2' sx={{ color: "#676767" }} >
                             Pinned
