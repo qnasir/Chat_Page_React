@@ -5,7 +5,7 @@ import { useTheme, styled } from '@mui/material/styles'
 import Logo from '../assets/logo.png'
 import { ChatCircleDots, Gear, GearSix, Phone, SignOut, User, Users } from "phosphor-react";
 import { faker } from '@faker-js/faker';
-import Chats from './Chats';
+import GeneralApp from './GeneralApp';
 import { AppContext } from '../Context/ParentContext';
 
 export default function Dashboard() {
@@ -118,7 +118,7 @@ export default function Dashboard() {
         </Stack>
 
       </Box >
-      <Chats />
+      <GeneralApp />
     </Stack>
 
   );
