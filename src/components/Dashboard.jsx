@@ -73,7 +73,7 @@ export default function Dashboard() {
   return (
 
     <Stack direction="row">
-      <Box p={1} sx={{ backgroundColor: isToggled ? "white" : "#1F2631", boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)", height: "100vh", width: 80 }}>
+      <Box p={1} sx={{ backgroundColor: isToggled ? "white" : "#1F2631", boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)", height: "calc(100vh - 16px)", width: 100 }}>
 
         <Stack direction="column" justifyContent="space-between" alignItems={"center"} sx={{ height: "100%" }} spacing={3}>
 
