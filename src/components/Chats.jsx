@@ -181,8 +181,8 @@ function Chats() {
     const {isToggled} = useContext(AppContext)
 
     return (
-        <Box sx={{ position: "relative",  width: 320, backgroundColor: isToggled ? "#F8FAFF" : "#1F2631" , boxShadow: "0px 0px 2px rgba(0, 0, 0, 025)" }}>
-            <Stack p={3} spacing={2} sx={{ height: "100vh" }} >
+        <Box sx={{ position: "relative",  width: 382, backgroundColor: isToggled ? "#F8FAFF" : "#1F2631" , boxShadow: "0px 0px 2px rgba(0, 0, 0, 025)" }}>
+            <Stack p={3} spacing={2} sx={{ height: "calc(100vh - 48px)" }} >
                 <Stack direction="row" alignItems={"center"} justifyContent="space-between">
                     <Typography sx={{ color: isToggled ? "#000" : "#fff" }} variant="h5">
                         Chats
