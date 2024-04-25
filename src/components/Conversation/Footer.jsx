@@ -7,6 +7,7 @@ import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 
 import { Camera, File, Image, Sticker, User } from "phosphor-react";
+import { useSelector } from 'react-redux';
 
 const Actions = [
     {
@@ -81,8 +82,10 @@ const Footer = () => {
     const { isToggled } = useContext(AppContext)
     const [openPicker, setOpenPicker] = useState(false)
 
+    const { sidebar } = useSelector((store) => store.app)
+
     return (
-        <Box p={2} sx={{ width: "97.2%", backgroundColor: isToggled ? "#F8FAFF" : "#171A21", boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)" }}>
+        <Box p={2} sx={{ width: sidebar.open ? "96.3%" : "97.35%", backgroundColor: isToggled ? "#F8FAFF" : "#171A21", boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)" }}>
 
             <Stack sx={{ backgroundColor: isToggled ? "#fff" : "#353b45", borderRadius: 1.5 }} direction={"row"} alignItems={"center"} spacing={3}>
                 {/* Chat Input */}
