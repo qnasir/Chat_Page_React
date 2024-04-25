@@ -5,6 +5,8 @@ import Conversation from './Conversation';
 import { AppContext } from '../Context/ParentContext';
 import Contact from './Contact';
 import { useSelector } from 'react-redux';
+import StarredMsgs from './ContactSection/StarredMsgs';
+import SharedMsgs from './ContactSection/SharedMsgs';
 
 function GeneralApp() {
 
@@ -23,7 +25,21 @@ function GeneralApp() {
         </Box>
 
         {/* Contact Info */}
-        {sidebar.open && <Contact />}
+        {sidebar.open && (() => {
+          switch (sidebar.type) {
+            case "CONTACT":
+              return <Contact />
+
+            case "STARRED":
+              return <StarredMsgs />
+              
+            case "SHARED":
+              return <SharedMsgs />
+
+            default:
+              break;
+          }
+        })()}
 
     </Stack>
   )

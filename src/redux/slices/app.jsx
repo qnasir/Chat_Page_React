@@ -17,7 +17,7 @@ const appSlice = createSlice({
             state.sidebar.open = !state.sidebar.open;
         },
         updateSidebarType(state, action) {
-            state.sidebar.type = action.payload.type;
+            state.sidebar.type = action.payload;
         },
     }
 });
