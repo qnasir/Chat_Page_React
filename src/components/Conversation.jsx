@@ -13,7 +13,7 @@ function Conversation() {
     const {isToggled} = useContext(AppContext)
 
     return (
-        <Stack sx={{ height: "100%", maxHeight: "100vh", width: "auto" }} >
+        <Stack sx={{ height: "100%", maxHeight: "100vh", width: "99.8%" }} >
 
             {/* Chat Header */}
             <Header />
