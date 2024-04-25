@@ -2,6 +2,8 @@ import { Divider, Stack, Typography, Box, Link, IconButton, Menu, MenuItem } fro
 import React, { useContext, useState } from 'react'
 import { AppContext } from '../../Context/ParentContext'
 import { DotsThreeVertical, DownloadSimple, Image } from 'phosphor-react'
+import { faker } from '@faker-js/faker'
+
 
 const Message_options = [
   {
@@ -24,7 +26,7 @@ const Message_options = [
   },
 ];
 
-const DocMsg = ({ el }) => {
+const DocMsg = ({ el, menu }) => {
 
   const { isToggled } = useContext(AppContext)
 
@@ -42,21 +44,21 @@ const DocMsg = ({ el }) => {
           <Typography variant='body2' sx={{ color: el.incoming ? isToggled ? "#000" : "#fff" : "#fff" }} >{el.message}</Typography>
         </Stack>
       </Box>
-      <MessageOptions />
+      {menu && <MessageOptions />}
     </Stack>
   )
 }
 
-const LinkMsg = ({ el }) => {
+const LinkMsg = ({ el, menu }) => {
 
   const { isToggled } = useContext(AppContext)
 
   return (
     <Stack direction="row" justifyContent={el.incoming ? "start" : "end"}>
-      <Box p={1.5} sx={{ backgroundColor: el.incoming ? isToggled ? "#fff" : "#171A21" : "#0755B6", borderRadius: 1.5, width: "max-content" }}>
+      <Box p={1.7} sx={{ backgroundColor: el.incoming ? isToggled ? "#fff" : "#171A21" : "#0755B6", borderRadius: 1.5, width: "max-content" }}>
         <Stack spacing={2}>
           <Stack p={2} spacing={3} sx={{ backgroundColor: isToggled ? "#fff" : "#1F2631", borderRadius: 1 }}>
-            <img src={el.preview} alt={el.message} style={{ maxHeight: 210, borderRadius: "10px" }} />
+            <img src={faker.image.food()} alt={el.message} style={{ maxHeight: 170, borderRadius: "10px" }} />
             <Stack spacing={2}>
               <Typography variant='subtitle2' color={isToggled ? "#000" : "#fff"}>Creating Chat App</Typography>
               <Typography sx={{ color: "blue" }} variant='subtitle2' component={Link} to="//https://www.youtube.com">www.youtube.com</Typography>
@@ -67,12 +69,12 @@ const LinkMsg = ({ el }) => {
           </Stack>
         </Stack>
       </Box>
-      <MessageOptions />
+      {menu && <MessageOptions />}
     </Stack>
   )
 }
 
-const ReplyMsg = ({ el }) => {
+const ReplyMsg = ({ el, menu }) => {
 
   const { isToggled } = useContext(AppContext)
 
@@ -90,12 +92,12 @@ const ReplyMsg = ({ el }) => {
           </Typography>
         </Stack>
       </Box>
-      <MessageOptions />
+      {menu && <MessageOptions />}
     </Stack>
   )
 }
 
-const MediaMsg = ({ el }) => {
+const MediaMsg = ({ el, menu }) => {
 
   const { isToggled } = useContext(AppContext)
 
@@ -103,18 +105,18 @@ const MediaMsg = ({ el }) => {
     <Stack direction="row" justifyContent={el.incoming ? "start" : "end"}>
       <Box p={1.5} sx={{ backgroundColor: el.incoming ? isToggled ? "#fff" : "#171A21" : "#0755B6", borderRadius: 1.5, width: "max-content" }}>
         <Stack spacing={1}>
-          <img src={el.img} alt={el.message} style={{ maxHeight: 210, borderRadius: "10px" }} />
+          <img src={el.img} alt={el.message} style={{ maxHeight: 190, borderRadius: "10px" }} />
           <Typography variant="body2" color={el.incoming ? isToggled ? "#000" : "#fff" : "#fff"}>
             {el.message}
           </Typography>
         </Stack>
       </Box>
-      <MessageOptions />
+      {menu && <MessageOptions />}
     </Stack>
   )
 }
 
-const TextMsg = ({ el }) => {
+const TextMsg = ({ el, menu }) => {
 
   const { isToggled } = useContext(AppContext)
 
@@ -125,7 +127,7 @@ const TextMsg = ({ el }) => {
           {el.message}
         </Typography>
       </Box>
-      <MessageOptions />
+      {menu && <MessageOptions />}
     </Stack>
   )
 }

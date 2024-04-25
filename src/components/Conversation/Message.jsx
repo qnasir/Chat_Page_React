@@ -73,7 +73,7 @@ const Chat_History = [
     },
   ];
 
-const Message = () => {
+const Message = ({menu}) => {
 
   return (
     <Box p={3}>
@@ -88,23 +88,23 @@ const Message = () => {
                     switch (el.subtype) {
                         case "img":
                             // img msg 
-                            return <MediaMsg el={el} />
+                            return <MediaMsg menu={menu} el={el} />
 
                         case "doc":
                             // Doc msg 
-                            return <DocMsg el={el} />
+                            return <DocMsg menu={menu} el={el} />
 
                         case "link":
                             // Link msg 
-                            return <LinkMsg el={el} />
+                            return <LinkMsg menu={menu} el={el} />
 
                         case "reply":
                             // reply msg 
-                            return <ReplyMsg el={el} />
+                            return <ReplyMsg menu={menu} el={el} />
                         
                         default:
                             //Text message
-                            return <TextMsg el={el} />
+                            return <TextMsg menu={menu} el={el} />
 
                     }
 

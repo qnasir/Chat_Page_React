@@ -1,17 +1,76 @@
-import React, { useContext } from 'react'
-import { Box, Stack, IconButton, Typography, Avatar, Divider, Button } from '@mui/material'
+import React, { forwardRef, useContext, useState } from 'react'
+import { Box, Stack, IconButton, Typography, Avatar, Divider, Button, DialogTitle, Dialog, DialogContent, DialogContentText, DialogActions, Slide } from '@mui/material'
 import { Bell, CaretRight, Phone, Prohibit, Star, Trash, VideoCamera, X } from 'phosphor-react'
 import { AppContext } from '../Context/ParentContext'
 import { useDispatch } from 'react-redux'
-import { toggleSidebar } from '../redux/slices/app'
+import { toggleSidebar, updateSidebarType } from '../redux/slices/app'
 import { faker } from '@faker-js/faker'
 import AntSwitch from './MUI/AntSwitch'
 
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const BlockDialog = ({ open, handleClose }) => {
+  return (
+    <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"Block this contact"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Are you sure you want to block this contact?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>Yes</Button>
+        </DialogActions>
+      </Dialog>
+  )
+}
+
+const DeleteDialog = ({ open, handleClose }) => {
+  return (
+    <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"Delete this chat"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Are you sure you want to delete this chat?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>Yes</Button>
+        </DialogActions>
+      </Dialog>
+  )
+}
 
 const Contact = () => {
 
   const { isToggled } = useContext(AppContext)
   const dispatch = useDispatch()
+  const [openBlock, setOpenBlock] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+
+  const handleCloseBlock = () => {
+    setOpenBlock(false);
+  };
+
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+  };
 
   return (
     <Box sx={{ width: 312, height: "100vh" }}>
@@ -27,7 +86,7 @@ const Contact = () => {
 
         {/* Body */}
 
-        <Stack sx={{ height: "100%", position: "relative", flexGrow: 1, overflowY: "scroll", backgroundColor: isToggled ? "" : "#171A21" }} p={3} spacing={3} >
+        <Stack sx={{ height: "100%", position: "relative", flexGrow: 1, overflowY: "scroll", '&::-webkit-scrollbar': {display: 'none'}, backgroundColor: isToggled ? "" : "#171A21" }} p={3} spacing={3} >
           <Stack alignItems={"center"} direction="row" spacing={2} >
             <Avatar src={faker.image.avatar()} alt={faker.name.fullName()} sx={{ height: 64, width: 64 }} />
             <Stack spacing={0.5}>
@@ -57,7 +116,7 @@ const Contact = () => {
           <Divider color={isToggled ? "#D3D3D3" : "#2F4F4F"} />
           <Stack direction="row" alignItems={"center"} justifyContent="space-between">
             <Typography color={isToggled ? "#000" : "#fff"} variant='subtitle2'>Media, Links & Docs</Typography>
-            <Button endIcon={<CaretRight />}>
+            <Button onClick={() => {dispatch(updateSidebarType("SHARED"))}} endIcon={<CaretRight />}>
               401
             </Button>
           </Stack>
@@ -74,7 +133,7 @@ const Contact = () => {
               <Star color={isToggled ? "#000" : "#fff"} size={21} />
               <Typography color={isToggled ? "#000" : "#fff"} variant='subtitle2'>Starred Messages</Typography>
             </Stack>
-            <IconButton>
+            <IconButton onClick={() => dispatch(updateSidebarType("STARRED"))}>
               <CaretRight color={isToggled ? "grey" : "#fff"} />
             </IconButton>
           </Stack>
@@ -96,12 +155,14 @@ const Contact = () => {
             </Stack>
           </Stack>
           <Stack direction="row" alignItems={"center"} spacing={2}>
-            <Button startIcon={<Prohibit />} fullWidth variant='outlined' >Block</Button>
-            <Button startIcon={<Trash />} fullWidth variant='outlined' >Delete</Button>
+            <Button onClick={() => setOpenBlock(true)} startIcon={<Prohibit />} fullWidth variant='outlined' >Block</Button>
+            <Button onClick={() => setOpenDelete(true)} startIcon={<Trash />} fullWidth variant='outlined' >Delete</Button>
           </Stack>
         </Stack>
 
       </Stack>
+      {openBlock && <BlockDialog open={openBlock} handleClose={handleCloseBlock} />}
+      {openDelete && <BlockDialog open={openDelete} handleClose={handleCloseDelete} />}
     </Box>
   )
 }
