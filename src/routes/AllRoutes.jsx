@@ -6,6 +6,7 @@ import Login from '../components/Auth/Login'
 import Register from '../components/Auth/Register'
 import ResetPassword from '../components/Auth/ResetPassword'
 import NewPassword from '../components/Auth/NewPassword'
+import GroupChat from '../components/GroupChat'
 
 const AllRoutes = () => {
   return (
@@ -18,6 +19,7 @@ const AllRoutes = () => {
             <Route path='/auth/reset-password' element={<ResetPassword />} />
             <Route path='/auth/new-password' element={<NewPassword />} />
             <Route path='/auth/register' element={<Settings />} />
+            <Route path='/group' element={<GroupChat />} />
         </Routes>
     </>
   )
