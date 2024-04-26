@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Stack } from '@mui/material';
-import GeneralApp from './GeneralApp';
 import Sidebar from './Sidebar';
 import AllRoutes from '../routes/AllRoutes';
 
