@@ -162,7 +162,7 @@ const Contact = () => {
 
       </Stack>
       {openBlock && <BlockDialog open={openBlock} handleClose={handleCloseBlock} />}
-      {openDelete && <BlockDialog open={openDelete} handleClose={handleCloseDelete} />}
+      {openDelete && <DeleteDialog open={openDelete} handleClose={handleCloseDelete} />}
     </Box>
   )
 }

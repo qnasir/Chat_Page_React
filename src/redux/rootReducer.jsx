@@ -4,8 +4,6 @@ import appSliceReducer  from './slices/app.jsx'
 
 //slices
 
-console.log("Hi 1")
-
 const rootPersistConfig = {
     key: 'root',
     storage,
