@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Stack } from '@mui/material';
 import GeneralApp from './GeneralApp';
 import Sidebar from './Sidebar';
+import AllRoutes from '../routes/AllRoutes';
 
 export default function Dashboard() {
 
@@ -11,8 +12,8 @@ export default function Dashboard() {
       {/* Sidebar */}
       <Sidebar/>
 
-      {/* General App */}
-      <GeneralApp />
+      {/* All Routes */}
+      <AllRoutes />
     </Stack>
 
   );
