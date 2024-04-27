@@ -93,59 +93,63 @@ const ChatList = [
 
 function Chats() {
 
-    const {isToggled} = useContext(AppContext)
+    const { isToggled } = useContext(AppContext)
 
     return (
-        <Box sx={{ position: "relative",  width: 312, backgroundColor: isToggled ? "#F8FAFF" : "#171A21" , boxShadow: "0px 0px 2px rgba(0, 0, 0, 025)" }}>
-            <Stack p={3} spacing={2} sx={{ height: "calc(100vh - 48px)" }} >
-                <Stack direction="row" alignItems={"center"} justifyContent="space-between">
-                    <Typography sx={{ color: isToggled ? "#000" : "#fff" }} variant="h5">
-                        Chats
-                    </Typography>
-                    <IconButton sx={{ color: isToggled ? "#000" : "#fff" }} >
-                        <CircleDashed />
-                    </IconButton>
-                </Stack>
-                <Stack sx={{ width: "100%" }}>
-                    <Search>
-                        <SearchIconWrapper>
-                            <MagnifyingGlass color={isToggled ? "#709CE6" : "grey"} />
-                        </SearchIconWrapper>
-                        <StyledInputBase sx={{ color: isToggled ? "#36454F" : "	#fff", backgroundColor: isToggled ? "#fff" : "#1F2631", borderRadius: 20 }} placeholder="Search..." inputProps={{ "aria-label": "search" }} />
-                    </Search>
-                </Stack>
-                <Stack spacing={1}>
-                    <Stack direction="row" alignItems={"center"} spacing={1.5}>
-                        <ArchiveBox color={isToggled ? '#000' : '#fff'} size={24} />
-                        <Button>Archive</Button>
-                    </Stack>
-                    <Divider color={isToggled ? "#D3D3D3" : "#2F4F4F"} />
-                </Stack>
-                <Stack spacing={2} direction="column" sx={{ flexGrow: 1, overflow: "scroll", height: "100%", '&::-webkit-scrollbar': {
-                    display: 'none'
-                } }} >
-                    <Stack spacing={2.4}>
-                        <Typography variant='subtitle2' sx={{ color: "#676767" }} >
-                            Pinned
+        <>
+            <Box sx={{ position: "relative", width: 312, backgroundColor: isToggled ? "#F8FAFF" : "#171A21", boxShadow: "0px 0px 2px rgba(0, 0, 0, 025)" }}>
+                <Stack p={3} spacing={2} sx={{ height: "calc(100vh - 48px)" }} >
+                    <Stack direction="row" alignItems={"center"} justifyContent="space-between">
+                        <Typography sx={{ color: isToggled ? "#000" : "#fff" }} variant="h5">
+                            Chats
                         </Typography>
-                        {ChatList.filter((el) => el.pinned).map((el) => {
-                            return <ChatElement key={el.id} {...el} />
-                        })}
+                        <IconButton sx={{ color: isToggled ? "#000" : "#fff" }} >
+                            <CircleDashed />
+                        </IconButton>
                     </Stack>
-                    <Stack spacing={2.4}>
-                        <Typography variant='subtitle2' sx={{ color: "#676767" }} >
-                            All Chats
-                        </Typography>
-                        {ChatList.filter((el) => !el.pinned).map((el) => {
-                            return <ChatElement key={el.id} {...el} />
-                        })}
+                    <Stack sx={{ width: "100%" }}>
+                        <Search>
+                            <SearchIconWrapper>
+                                <MagnifyingGlass color={isToggled ? "#709CE6" : "grey"} />
+                            </SearchIconWrapper>
+                            <StyledInputBase sx={{ color: isToggled ? "#36454F" : "	#fff", backgroundColor: isToggled ? "#fff" : "#1F2631", borderRadius: 20 }} placeholder="Search..." inputProps={{ "aria-label": "search" }} />
+                        </Search>
+                    </Stack>
+                    <Stack spacing={1}>
+                        <Stack direction="row" alignItems={"center"} spacing={1.5}>
+                            <ArchiveBox color={isToggled ? '#000' : '#fff'} size={24} />
+                            <Button>Archive</Button>
+                        </Stack>
+                        <Divider color={isToggled ? "#D3D3D3" : "#2F4F4F"} />
+                    </Stack>
+                    <Stack spacing={2} direction="column" sx={{
+                        flexGrow: 1, overflow: "scroll", height: "100%", '&::-webkit-scrollbar': {
+                            display: 'none'
+                        }
+                    }} >
+                        <Stack spacing={2.4}>
+                            <Typography variant='subtitle2' sx={{ color: "#676767" }} >
+                                Pinned
+                            </Typography>
+                            {ChatList.filter((el) => el.pinned).map((el) => {
+                                return <ChatElement key={el.id} {...el} />
+                            })}
+                        </Stack>
+                        <Stack spacing={2.4}>
+                            <Typography variant='subtitle2' sx={{ color: "#676767" }} >
+                                All Chats
+                            </Typography>
+                            {ChatList.filter((el) => !el.pinned).map((el) => {
+                                return <ChatElement key={el.id} {...el} />
+                            })}
+                        </Stack>
                     </Stack>
                 </Stack>
-            </Stack>
-        </Box>
+            </Box>
 
-        // Right
-        // TODO => Reuse Conversation Components
+            {/* Right */}
+            {/* TODO => Reuse Conversation Components */}
+        </>
     )
 }
 
