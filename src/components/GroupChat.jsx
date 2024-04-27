@@ -1,5 +1,5 @@
 import { Box, Divider, IconButton, Link, Stack, Typography, useTheme, styled, Badge, Avatar } from '@mui/material'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { AppContext } from '../Context/ParentContext'
 import { faker } from '@faker-js/faker';
 import Search from './Search/Search'
@@ -7,6 +7,7 @@ import SearchIconWrapper from './Search/SearchIconWrapper'
 import StyledInputBase from './Search/StyledInputBase'
 import { MagnifyingGlass, Plus } from 'phosphor-react'
 import ChatElement from './Chats/ChatElement';
+import CreateGroup from './CreateGroup/CreateGroup';
 
 const ChatList = [
     {
@@ -96,6 +97,12 @@ const GroupChat = () => {
     const theme = useTheme();
 
     const { isToggled } = useContext(AppContext)
+    const [openDialog, setOpenDialog] = useState(false);
+
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
 
     return (
         <>
@@ -113,7 +120,7 @@ const GroupChat = () => {
                         </Stack>
                         <Stack direction="row" justifyContent="space-between" alignItems={"center"}>
                             <Typography sx={{ cursor: "pointer" }} variant='subtitle2' component={Link}>Create New Group</Typography>
-                            <IconButton><Plus style={{ color: theme.palette.primary.main }} /></IconButton>
+                            <IconButton onClick={() => setOpenDialog(true)}><Plus style={{ color: theme.palette.primary.main }} /></IconButton>
                         </Stack>
                         <Divider />
 
@@ -142,7 +149,7 @@ const GroupChat = () => {
                     </Stack>
                 </Box>
             </Stack>
-
+            {openDialog && <CreateGroup open={openDialog} handleClose={handleCloseDialog} />}
         </>
     )
 }
