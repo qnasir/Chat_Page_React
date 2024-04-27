@@ -11,7 +11,8 @@ const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
         <Box p={2} sx={{ width: "88%", borderRadius: 1, backgroundColor: isToggled ? "#fff" : "#1F2631" }}>
             <Stack direction="row" alignItems={"center"} justifyContent="space-between">
                 <Stack direction="row" spacing={2}>
-                    {online ? <StyledBadge overlap="circular" anchorOrigin={{ vertical: "bottom", horizontal: "right" }} variant="dot" >
+                    {online ? 
+                    <StyledBadge overlap="circular" anchorOrigin={{ vertical: "bottom", horizontal: "right" }} variant="dot" >
                         <Avatar src={img} />
                     </StyledBadge> : <Avatar src={img} />}
 

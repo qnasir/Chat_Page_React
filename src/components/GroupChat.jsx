@@ -133,6 +133,8 @@ const GroupChat = () => {
                                 <Typography variant='subtitle2' sx={{ color: "#676767" }} >
                                     Pinned
                                 </Typography>
+                                {/* Chat List */}
+
                                 {ChatList.filter((el) => el.pinned).map((el) => {
                                     return <ChatElement key={el.id} {...el} />
                                 })}
