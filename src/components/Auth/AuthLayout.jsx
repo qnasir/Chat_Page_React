@@ -2,8 +2,16 @@ import { Container, Stack } from '@mui/material'
 import Logo from '../../assets/logo.png'
 import AllRoutes from '../../routes/AllRoutes'
 import React from 'react'
+import { Navigate } from 'react-router-dom'
+
+ const isAuthenticated = true
 
 const AuthLayout = () => {
+
+  // if (isAuthenticated) {
+  //   return <Navigate to="/app" />
+  // }
+
   return (
     <>
         <Container sx={{ mt: 5 }} maxWidth="sm" >
