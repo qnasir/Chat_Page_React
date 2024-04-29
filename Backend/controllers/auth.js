@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const User = require("../models/user");
 const filterObj = require("../utils/filterObj");
 const { promisify } = require("util");
+const mailService = require("../services/mailer")
 
 const signToken = (userId) => jwt.sign({ userId }, process.env.JWT_SECRET);
 
@@ -58,6 +59,13 @@ exports.sendOTP = async (req, res, next) => {
   });
 
   // TODO => Send Mail
+  mail.mailService({
+    from: "qnasir575@gmail.com",
+    to: "example@gmail.com",
+    subject: "OTP for login",
+    text: `Your otp is ${new_otp}. This is valid for 10 Mins.`
+  })
+
   res.status(200).json({
     status: "success",
     message: "OTP Sent Successfully!",
