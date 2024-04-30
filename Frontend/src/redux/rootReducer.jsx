@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 import storage from "redux-persist/lib/storage";
 import appSliceReducer  from './slices/app.jsx'
+import authReducer from "./slices/auth.jsx";
 
 //slices
 
@@ -14,6 +15,7 @@ const rootPersistConfig = {
 
 const rootReducer = combineReducers({
     app: appSliceReducer,
+    auth: authReducer
 })
 
 export { rootPersistConfig, rootReducer }

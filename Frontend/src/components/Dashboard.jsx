@@ -3,13 +3,16 @@ import { Stack } from '@mui/material';
 import Sidebar from './Sidebar';
 import AllRoutes from '../routes/AllRoutes';
 import { Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 
 export default function Dashboard() {
 
-  // if (!isAuthenticated ) {
-  //   return <Navigate to="/auth/login" />
-  // }
+  const { isLoggedIn } = useSelector((state) => state.auth);
+
+  if (!isLoggedIn ) {
+    return <Navigate to="/auth/login" />
+  }
 
   return (
 
