@@ -38,7 +38,6 @@ export const { logIn, signOut, setLoading, setError } = slice.actions;
 export default slice.reducer;
 
 export function loginUser(formValues) {
-    console.log("data", formValues)
 
     return async dispatch => {
         dispatch(setLoading(true));
@@ -48,15 +47,61 @@ export function loginUser(formValues) {
                     "Content-Type": "application/json",
                 }
             });
-            dispatch(logIn({ 
+            dispatch(logIn({
                 isLoggedIn: true,
                 token: response.data.token
-             }));
+            }));
         } catch (error) {
             console.error("Login error:", error);
             dispatch(setError("Failed to log in"));
         } finally {
             dispatch(setLoading(false));
+        }
+    }
+}
+
+export function LogoutUser() {
+    return async (dispatch, getState) => {
+        dispatch(signOut())
+    }
+}
+
+export function ForgotPassword(formValues) {
+
+    return async (dispatch, getState) => {
+        dispatch(setLoading(true));
+        try {
+            const response = await axios.post("/auth/forgot-password", formValues, {
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            console.log("Response", response)
+        } catch (error) {
+            console.log(error)
+            dispatch(setError("Failed to reset password"))
+        }
+    }
+}
+
+export function NewPassword(formValues) {
+
+    return async (dispatch, getState) => {
+        dispatch(setLoading(true));
+        try {
+            const response = await axios.post("/auth/reset-password", formValues, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            console.log("Response", response)
+            dispatch(logIn({
+                isLoggedIn: true,
+                token: response.data.token
+            }));
+        } catch (error) {
+            console.log(error)
+            dispatch(setError('Failed to set new password'))
         }
     }
 }
