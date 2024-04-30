@@ -2,17 +2,20 @@ const jwt = require("jsonwebtoken");
 const otpGenerator = require("otp-generator");
 const crypto = require("crypto");
 const User = require("../models/user");
+const bcryptjs = require("bcryptjs")
 const filterObj = require("../utils/filterObj");
 const { promisify } = require("util");
-const mailService = require("../services/mailer")
+const mailService = require("../services/mailer");
+const otp = require("../Templates/Mail/otp");
 
 const signToken = (userId) => jwt.sign({ userId }, process.env.JWT_SECRET);
 
 // User Register Route
 exports.register = async (req, res, next) => {
-  const { firstName, lastName, email, password, verified } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
-  const filteredBody = filterObj(req.body, "firstName", "lastName", "password");
+
+  const filteredBody = filterObj(req.body, "firstName", "lastName", "email", "password");
 
   // check if a verified user with given email exists
   const existing_user = await User.findOne({ email: email });
@@ -53,18 +56,23 @@ exports.sendOTP = async (req, res, next) => {
 
   const otp_expiry_time = Date.now() + 10 * 60 * 1000; // 10 mins after otp is send
 
-  await User.findByIdAndUpdate(userId, {
-    otp: new_otp,
-    otp_expiry_time,
+  const user = await User.findByIdAndUpdate(userId, {
+    otp_expiry_time: otp_expiry_time,
   });
 
+  user.otp = new_otp.toString();
+
+  await user.save({ new: true, validateModifiedOnly: true });
+
+
   // TODO => Send Mail
-  mail.mailService({
+  mailService.sendEmail({
     from: "qnasir575@gmail.com",
-    to: "example@gmail.com",
-    subject: "OTP for login",
-    text: `Your otp is ${new_otp}. This is valid for 10 Mins.`
-  })
+    to: user.email,
+    subject: "Verification OTP",
+    html: otp(user.firstName, new_otp),
+    attachments: [],
+  });
 
   res.status(200).json({
     status: "success",
@@ -78,7 +86,7 @@ exports.verifyOTP = async (req, res, next) => {
 
   const { email, otp } = req.body;
 
-  const user = User.findOne({
+  const user = await User.findOne({
     email,
     otp_expiry_time: { $gt: Date.now() },
   });
@@ -124,6 +132,7 @@ exports.login = async (req, res, next) => {
   }
 
   const userDoc = await User.findOne({ email: email }).select("+password");
+  console.log(userDoc)
 
   if (
     !userDoc ||
@@ -207,9 +216,12 @@ exports.forgotPassword = async (req, res, next) => {
 
   // Generate the random reset token
   const resetToken = user.createPasswordResetToken();
-  const resetURL = `https://tawk.com/auth/reset-password/?code=${resetToken}`;
-
+  await user.save({ validateBeforeSave: false })
+  
+  console.log("resetToken", resetToken)
+  
   try {
+    const resetURL = `https://tawk.com/auth/reset-password/?code=${resetToken}`;
     // TODO => Send email with reset url
 
     res.status(200).json({
@@ -233,9 +245,10 @@ exports.resetPassword = async (req, res, next) => {
   // 1) Get user based on token
   const hashedToken = crypto
     .createHash("sha256")
-    .update(req.params.token)
+    .update(req.body.token)
     .digest("hex");
-  const user = User.findOne({
+
+  const user = await User.findOne({
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
   });
@@ -251,7 +264,7 @@ exports.resetPassword = async (req, res, next) => {
 
   // Update users password and set ResetToken & expiry to undefined
   user.password = req.body.password;
-  user.passwordConfirm = req.body.passwordConfirm;
+  user.passwordConfirm = undefined;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
 

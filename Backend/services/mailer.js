@@ -1,41 +1,48 @@
-const sgMail = require("@sendgrid/mail");
-const dotenv = require("dotenv")
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
 
 dotenv.config({ path: "../config.env" });
 
-sgMail.setApiKey(process.env.SG_KEY);
+async function main() {
 
-const sendSGMail = async ({
-  recipient,
-  sender,
-  subject,
-  html,
-  text,
-  content,
-  attachments,
-}) => {
-  try {
-    const from = sender || "qnasir575@gmail.com";
+    const config = {
+        service: 'gmail',
+        auth: {
+            user: 'qnasir575@gmail.com',
+            pass: 'jeff kavv dwmw hxtb',
+        }
+    }
 
-    const msg = {
-      to: recipient, // email of recipient
-      from: from, // this will be our verified sender
-      subject,
-      html: html,
-      text: text,
-      attachments,
+    const transporter = nodemailer.createTransport(config)
+
+    const sendMail = async ({ to, sender, subject, html, attachments, text }) => {
+        try {
+            const from = sender || "qnasir575@gmail.com";
+            const msg = {
+                to, // email of recipient
+                from, // verified sender
+                subject,
+                html,
+                text,
+                attachments,
+            };
+
+            let info = await transporter.sendMail(msg);
+            return info;
+        } catch (error) {
+            console.error(error);
+            throw error; // rethrow or handle differently if needed
+        }
     };
 
-    return sgMail.send(msg);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-exports.sendEmail = async () => {
-    if (process.env.NODE_ENV === "developement") {
-        return new Promise.resolve();
-    } else {
-        return sendSGMail(args);
+    exports.sendEmail = async (args) => {
+        if (process.env.NODE_ENV === "development") {
+            console.log("Development mode - Email not sent.");
+            return Promise.resolve("Development mode - Email not sent.");
+        } else {
+            return sendMail(args);
+        }
     }
 }
+
+main().catch(console.error);
