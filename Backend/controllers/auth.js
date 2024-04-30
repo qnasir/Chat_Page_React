@@ -123,6 +123,7 @@ exports.verifyOTP = async (req, res, next) => {
 // User Login Route
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
+  console.log(email, password)
 
   if (!email || !password) {
     res.status(400).json({
@@ -130,6 +131,7 @@ exports.login = async (req, res, next) => {
       message: "Both email and password are required",
     });
   }
+
 
   const userDoc = await User.findOne({ email: email }).select("+password");
   console.log(userDoc)

@@ -8,10 +8,13 @@ import { Stack } from '@mui/system'
 import { Alert, Button, IconButton, InputAdornment, Link } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 import { Eye, EyeSlash } from 'phosphor-react'
+import { useDispatch } from "react-redux"
+import { loginUser } from '../../redux/slices/auth'
 
 const LoginForm = () => {
 
     const [showPassword, setShowPassword] = useState(false)
+    const dispatch = useDispatch();
 
     const LoginSchema = Yup.object().shape({
         email: Yup.string().required("Email is required").email("Email must be a valid email address"),
@@ -33,6 +36,7 @@ const LoginForm = () => {
     const onSubmit = async (data) => {
         try {
             //submit data to backend
+            dispatch(loginUser(data))
         } catch (error) {
             console.log(error)
             reset()
