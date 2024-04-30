@@ -6,11 +6,14 @@ import { faker } from '@faker-js/faker';
 import Logo from '../assets/logo.png'
 import AntSwitch from './MUI/AntSwitch';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux"
+import { LogoutUser } from '../redux/slices/auth';
 
 
 const Sidebar = () => {
 
     const navigate = useNavigate()
+    const dispatch = useDispatch();
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -23,14 +26,14 @@ const Sidebar = () => {
                 return "/app"
 
             case 1:
-                return"/group"
+                return "/group"
 
             case 2:
                 return "/call"
-            
+
             case 3:
                 return "/settings"
-            
+
             default:
                 break;
         }
@@ -46,7 +49,7 @@ const Sidebar = () => {
         switch (index) {
 
             case 0:
-                return "/profile"             
+                return "/profile"
 
             case 1:
                 return "/settings"
@@ -54,7 +57,7 @@ const Sidebar = () => {
             case 2:
                 // TODO => Update token and set authenticated to  false
                 return "/auth/login"
-        
+
             default:
                 break;
         }
@@ -116,7 +119,7 @@ const Sidebar = () => {
                                         {el.icon}
                                     </IconButton>
                                 </Box>
-                                : <IconButton onClick={() => {setSelected(el.index); navigate(getPath(el.index))}} sx={{ width: "max-content", color: isToggled ? "#000" : "#fff" }} key={el.index}>
+                                : <IconButton onClick={() => { setSelected(el.index); navigate(getPath(el.index)) }} sx={{ width: "max-content", color: isToggled ? "#000" : "#fff" }} key={el.index}>
                                     {el.icon}
                                 </IconButton>
                         ))}
@@ -128,7 +131,7 @@ const Sidebar = () => {
                                 </IconButton>
                             </Box>
                             :
-                            <IconButton onClick={() => {setSelected(3); navigate(getPath(3))}} sx={{ width: "max-content", color: isToggled ? "#000" : "#fff" }} >
+                            <IconButton onClick={() => { setSelected(3); navigate(getPath(3)) }} sx={{ width: "max-content", color: isToggled ? "#000" : "#fff" }} >
                                 <Gear />
                             </IconButton>
                         }
@@ -162,8 +165,15 @@ const Sidebar = () => {
                     >
                         <Stack spacing={1} px={1}>
                             {Profile_Menu.map((el, idx) => (
-                                <MenuItem key={el.title} onClick={() => {handleClick(event)}}>
-                                    <Stack onClick={() => {navigate(getMenuPath(idx))}} key={el.title} sx={{ width: 100 }} direction="row" alignItems={"center"} justifyContent="space-between" >
+                                <MenuItem key={el.title} onClick={() => { handleClick(event) }}>
+                                    <Stack onClick={() => {
+                                        if (idx === 2) {
+                                            // if idx is 2 then logout
+                                            dispatch(LogoutUser())
+                                        } else {
+                                            navigate(getMenuPath(idx))
+                                        }
+                                    }} key={el.title} sx={{ width: 100 }} direction="row" alignItems={"center"} justifyContent="space-between" >
                                         <span>{el.title}</span>
                                         {el.icon}
                                     </Stack>

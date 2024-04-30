@@ -11,7 +11,7 @@ function App() {
 
   const authPaths = ["/auth/login", "/auth/register", "/auth/register", "/auth/reset-password", "/auth/new-password"] 
 
-  const showDashboard = authPaths.includes(location.pathname)
+  const showDashboard = authPaths.some(authPath => location.pathname.startsWith(authPath));
 
   return (
     <ParentContext>
