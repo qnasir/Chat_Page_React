@@ -9,6 +9,7 @@ import NewPassword from '../components/Auth/NewPassword'
 import GroupChat from '../components/GroupChat'
 import Call from '../components/Call/Call'
 import Profile from '../components/Profile/Profile'
+import Verify from '../components/Auth/Verify'
 
 const AllRoutes = () => {
   return (
@@ -20,6 +21,7 @@ const AllRoutes = () => {
             <Route path='/profile' element={<Profile />} />
             <Route path='/auth/login' element={<Login />} />
             <Route path='/auth/register' element={<Register />} />
+            <Route path='/auth/verify' element={<Verify />} />
             <Route path='/auth/reset-password' element={<ResetPassword />} />
             <Route path='/auth/new-password' element={<NewPassword />} />
             <Route path='/auth/register' element={<Settings />} />

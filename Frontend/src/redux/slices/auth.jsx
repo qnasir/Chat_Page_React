@@ -3,9 +3,10 @@ import axios from "../../utils/axios";
 
 const initialState = {
     isLoggedIn: false,
-    token: "",
     isLoading: false,
-    error: null
+    token: "",
+    error: null,
+    email: "",
 }
 
 const slice = createSlice({
@@ -29,11 +30,14 @@ const slice = createSlice({
         },
         setError(state, action) {
             state.error = action.payload;
+        },
+        updateRegisterEmail(state, action) {
+            state.email = action.payload.email
         }
     }
 });
 
-export const { logIn, signOut, setLoading, setError } = slice.actions;
+export const { logIn, signOut, setLoading, setError, updateRegisterEmail } = slice.actions;
 
 export default slice.reducer;
 
@@ -102,6 +106,55 @@ export function NewPassword(formValues) {
         } catch (error) {
             console.log(error)
             dispatch(setError('Failed to set new password'))
+        }
+    }
+}
+
+export function RegisterUser(formValues) {
+    return async (dispatch, getState) => {
+        dispatch(setLoading(true));
+        try {
+            const response = await axios.post("/auth/register", formValues, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            console.log(response)
+            dispatch(updateRegisterEmail({ email: formValues.email }));
+            dispatch(setLoading(false));
+            dispatch(setError(false));
+            if (!getState().auth.error) {
+                window.location.href = "/auth/verify"
+            }
+        } catch (error) {
+            console.log(error)
+            dispatch(setError("Failed to register"))
+        }
+    }
+}
+
+export function VerifyEmail(formValues) {
+
+    console.log(formValues)
+   
+    return async (dispatch, getState) => {
+
+        dispatch(setLoading(true));
+        try {
+            const response = await axios.post("/auth/verify", formValues, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            console.log("Response", response)
+            dispatch(logIn({
+                isLoggedIn: true,
+                token: response.data.token
+            }));
+            window.location.href
+        } catch (error) {
+            console.log(error)
+            dispatch(setError("Failed to verify"))
         }
     }
 }
