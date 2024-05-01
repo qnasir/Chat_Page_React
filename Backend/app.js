@@ -19,13 +19,20 @@ app.use(mongosanitize());
 
 app.use(xssClean());
 
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "PATCH", "POST", "DELETE", "PUT"],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: ['https://chatappfrontend-xi.vercel.app','http://localhost:5173'],
+  methods: 'GET, POST, PUT, DELETE',
+  allowedHeaders: 'Content-Type',
+  credentials: true,
+}));
+
+// app.use(
+//   cors({
+//     origin: "*",
+//     methods: ["GET", "PATCH", "POST", "DELETE", "PUT"],
+//     credentials: true,
+//   })
+// );
 
 app.use(express.json({ limit: "10kb" }));
 app.use(bodyParser.json());
