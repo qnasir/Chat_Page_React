@@ -10,9 +10,9 @@ export default function Dashboard() {
 
   const { isLoggedIn } = useSelector((state) => state.auth);
 
-  if (!isLoggedIn ) {
-    return <Navigate to="/auth/login" />
-  }
+  // if (!isLoggedIn ) {
+  //   return <Navigate to="/auth/login" />
+  // }
 
   return (
 
