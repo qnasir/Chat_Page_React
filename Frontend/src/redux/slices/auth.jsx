@@ -56,6 +56,9 @@ export function loginUser(formValues) {
                 isLoggedIn: true,
                 token: response.data.token
             }));
+
+            window.localStorage.setItem("user_id", response.data.user_id);
+
             dispatch(showSnackbar({
                 severity: "success",
                 message: response.data.message,
@@ -75,6 +78,7 @@ export function loginUser(formValues) {
 
 export function LogoutUser() {
     return async (dispatch, getState) => {
+        window.localStorage.removeItem("user_id");
         dispatch(signOut())
     }
 }
@@ -160,7 +164,9 @@ export function VerifyEmail(formValues) {
                 isLoggedIn: true,
                 token: response.data.token
             }));
-            window.location.href
+
+            window.localStorage.setItem("user_id", response.data.user_id);
+            // window.location.href
         } catch (error) {
             console.log(error)
             dispatch(setError("Failed to verify"))
