@@ -1,12 +1,13 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Box, IconButton, Stack, Typography, InputBase, styled, Button, Divider, Avatar, Badge } from '@mui/material'
-import { ArchiveBox, CircleDashed, MagnifyingGlass } from 'phosphor-react'
+import { ArchiveBox, CircleDashed, MagnifyingGlass, Users } from 'phosphor-react'
 import { faker } from '@faker-js/faker';
 import { AppContext } from '../Context/ParentContext';
 import Search from './Search/Search';
 import SearchIconWrapper from './Search/SearchIconWrapper';
 import StyledInputBase from './Search/StyledInputBase';
 import ChatElement from './Chats/ChatElement';
+import Friends from './Friends/Friends';
 
 const ChatList = [
     {
@@ -94,6 +95,15 @@ const ChatList = [
 function Chats() {
 
     const { isToggled } = useContext(AppContext)
+    const [openDialog, setOpenDailog] = useState(false);
+
+    const handleCloseDialog = () => {
+        setOpenDailog(false);
+    }
+
+    const handleOpenDialog = () => {
+        setOpenDailog(true);
+    }
 
     return (
         <>
@@ -103,9 +113,16 @@ function Chats() {
                         <Typography sx={{ color: isToggled ? "#000" : "#fff" }} variant="h5">
                             Chats
                         </Typography>
-                        <IconButton sx={{ color: isToggled ? "#000" : "#fff" }} >
-                            <CircleDashed />
-                        </IconButton>
+                        <Stack direction="row" alignItems={"center"} spacing={1} >
+                            <IconButton sx={{ color: isToggled ? "#000" : "#fff" }} onClick={() => {
+                                handleOpenDialog();
+                            }} >
+                                <Users />
+                            </IconButton>
+                            <IconButton sx={{ color: isToggled ? "#000" : "#fff" }} >
+                                <CircleDashed />
+                            </IconButton>
+                        </Stack>
                     </Stack>
                     <Stack sx={{ width: "100%" }}>
                         <Search>
@@ -146,6 +163,8 @@ function Chats() {
                     </Stack>
                 </Stack>
             </Box>
+
+            {openDialog && (<Friends open={openDialog} handleClose={handleCloseDialog} />) }
 
             {/* Right */}
             {/* TODO => Reuse Conversation Components */}
