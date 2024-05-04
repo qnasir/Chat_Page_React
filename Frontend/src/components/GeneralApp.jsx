@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import Chats from './Chats'
 import Conversation from './Conversation';
 import { AppContext } from '../Context/ParentContext';
@@ -8,10 +8,12 @@ import { useSelector } from 'react-redux';
 import StarredMsgs from './ContactSection/StarredMsgs';
 import SharedMsgs from './ContactSection/SharedMsgs';
 
+import NoChatSvg from "../assets/Illustration/NoChat"
+
 function GeneralApp() {
 
   const {isToggled} = useContext(AppContext)
-  const { sidebar } = useSelector((store) => store.app)
+  const { sidebar, chat_type, room_id } = useSelector((store) => store.app)
 
   return (
     <Stack direction="row" sx={{ width: "100%" }} >
@@ -21,7 +23,15 @@ function GeneralApp() {
 
         {/* Conversation */}
         <Box sx={{ height: "100%", width: sidebar.open ? "calc(100vw - 704px)" : "calc(100vw - 392px)" ,backgroundColor: isToggled ? "#F0F4FA" : "#1F2631"}}>
-            <Conversation />
+          {room_id != null && chat_type === "individual" ? <Conversation /> : 
+            <Stack spacing={2} sx={{height: "100%", width: "100%"}} alignItems={"center"} justifyContent={"center"} >
+              <NoChatSvg />
+              <Typography variant='subtitle2'>
+                Select a conversation or start new one
+              </Typography>
+            </Stack>
+          }
+            
         </Box>
 
         {/* Contact Info */}
