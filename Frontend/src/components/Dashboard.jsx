@@ -28,7 +28,7 @@ export default function Dashboard() {
       }
     }
 
-    window.reload();
+    // window.location.reload();
 
     if (!socket) {
       connectSocket(user_id);

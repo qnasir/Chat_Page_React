@@ -2,13 +2,17 @@ import { Avatar, Badge, Box, Stack, Typography } from "@mui/material"
 import StyledBadge from "./StyledBadge"
 import { useContext } from "react"
 import { AppContext } from "../../Context/ParentContext"
+import { useDispatch } from "react-redux"
+import { SelectConversation } from "../../redux/slices/app"
 
 const ChatElement = ({ id, name, img, msg, time, unread, online }) => {
 
     const {isToggled} = useContext(AppContext)
-
+    const dispatch = useDispatch();
     return (
-        <Box p={2} sx={{ width: "88%", borderRadius: 1, backgroundColor: isToggled ? "#fff" : "#1F2631" }}>
+        <Box onClick={() => {
+            dispatch(SelectConversation({room_id: id}));
+        }} p={2} sx={{ width: "88%", borderRadius: 1, backgroundColor: isToggled ? "#fff" : "#1F2631" }}>
             <Stack direction="row" alignItems={"center"} justifyContent="space-between">
                 <Stack direction="row" spacing={2}>
                     {online ? 
