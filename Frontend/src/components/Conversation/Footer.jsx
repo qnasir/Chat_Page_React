@@ -60,14 +60,14 @@ const ChatInput = ({ setOpenPicker }) => {
                             </Tooltip>
                         ))}
                     </Stack>
-                    <InputAdornment>
+                    <InputAdornment position='start'>
                         <IconButton onClick={() => setOpenActions((prev) => !prev)}>
                             <LinkSimple color={"grey"} />
                         </IconButton>
                     </InputAdornment>
                 </Stack>),
             endAdornment:
-                <InputAdornment>
+                <InputAdornment position='end'>
                     <IconButton onClick={() => setOpenPicker((prev) => !prev)}>
                         <Smiley color={"grey"} />
                     </IconButton>

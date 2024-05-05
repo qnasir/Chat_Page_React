@@ -1,6 +1,7 @@
 
 // slices/app.jsx
 import { createSlice } from "@reduxjs/toolkit";
+import axios from "../../utils/axios";
 
 const initialState = {
     sidebar: {
@@ -30,7 +31,6 @@ const appSlice = createSlice({
             state.sidebar.type = action.payload;
         },
         openSnackbar(state, action) {
-            console.log(action.payload)
             state.snackbar.open =  true;
             state.snackbar.severity = action.payload.severity;
             state.snackbar.message = action.payload.message;
@@ -83,17 +83,20 @@ export function showSnackbar({ severity, message }) {
 
 export const FetchUsers = () => {
     return async (dispatch, getState) => {
-        await axios.get("/user/get-users", {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${getState().auth.token}`
-            }
-        }).then((response) => {
-            console.log(response)
-            dispatch(slice.actions.updateUsers({ users: response.data.data }))
-        }).catch((error) => {
-            console.log(error)
-        })
+        const token = getState().auth.token;
+        try {
+            const response = await axios.get("/user/get-users", {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            dispatch(updateUsers({ users: response.data.data }))
+        } catch (error) {
+            console.log("Fetching Users Error", error)
+        }
+    
+
     }
 }
 
@@ -106,7 +109,7 @@ export const FetchFriends = () => {
             }
         }).then((response) => {
             console.log(response)
-            dispatch(slice.actions.updateFriends({ friends: response.data.data }))
+            dispatch(updateFriends({ friends: response.data.data }))
         }).catch((error) => {
             console.log(error)
         })
@@ -122,7 +125,7 @@ export const FetchFriendRequest = () => {
             }
         }).then((response) => {
             console.log(response)
-            dispatch(slice.actions.updateFriendRequests({ request: response.data.data }))
+            dispatch(updateFriendRequests({ request: response.data.data }))
         }).catch((error) => {
             console.log(error)
         })
@@ -134,4 +137,3 @@ export const SelectConversation = ({room_id}) => {
         dispatch(selectConversation({room_id}));
     }
 }
-

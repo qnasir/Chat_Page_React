@@ -2,7 +2,7 @@ import { Dialog, DialogContent, Stack, Tab, Tabs } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { FetchFriendRequest, FetchFriends, FetchUsers } from '../../redux/slices/app';
-import { FriendComponent, FriendRequestComponent } from '../Friends';
+import { FriendComponent, FriendRequestComponent, UserComponent } from '../Friends';
 
 const UsersList = () => {
 
@@ -14,6 +14,10 @@ const UsersList = () => {
 
     const { users } = useSelector((state) => state.app);
 
+    if (!users || users.length === 0) {
+        return <div>No users available</div>;
+    }
+
     return (
         <>
             {users.map((el, idx) => {
@@ -23,6 +27,7 @@ const UsersList = () => {
         </>
     )
 }
+
 const FriendsList = () => {
 
     const dispatch = useDispatch();
@@ -33,6 +38,10 @@ const FriendsList = () => {
 
     const { friends } = useSelector((state) => state.app);
 
+    if (!friends || friends.length === 0) {
+        return <div>No friends found</div>;
+    }
+
     return (
         <>
             {friends.map((el, idx) => {
@@ -42,6 +51,7 @@ const FriendsList = () => {
         </>
     )
 }
+
 const FriendRequestList = () => {
 
     const dispatch = useDispatch();
@@ -51,6 +61,10 @@ const FriendRequestList = () => {
     }, [])
 
     const { friendRequests } = useSelector((state) => state.app);
+
+    if (!friendRequests || friendRequests.length === 0) {
+        return <div>No friend requests</div>;
+    }
 
     return (
         <>

@@ -14,6 +14,7 @@ process.on("uncaughtException", (err) => {
 const http = require("http");
 const User = require("./models/user");
 const FriendRequest = require("./models/friendRequest");
+const OneToOneMessage = require("./models/OneToOneMessage");
 
 const server = http.createServer(app);
 
@@ -43,12 +44,12 @@ server.listen(port, () => {
 
 // Listen for when the  client connects via socket.io-client
 io.on("connection", async (socket) => {
-  console.log(JSON.stringify(socket.handshake.query));
+  // console.log(JSON.stringify(socket.handshake.query));
   const user_id = socket.handshake.query["user_id"];
 
   const socket_id = socket.id;
 
-  console.log(`User connected ${socket_id}`);
+  console.log(`User connected to socket_Id ${socket_id}`);
 
   if (user_id != null && Boolean(user_id)) {
     try {
@@ -113,20 +114,90 @@ io.on("connection", async (socket) => {
     });
   });
 
+  socket.on("get_direct_conversations", async ({user_id}, callback) => {
+    const existing_conversations = await OneToOneMessage.find({
+      participants: {$all: [user_id]},
+    }).populate("participants", "firstName lastName _id email status")
+
+    console.log(existing_conversations);
+
+    callback(existing_conversations);
+
+  })
+
+  socket.on("start_conversation", async (data) => {
+    // data => {t0, from}
+    const { to, from } = data;
+
+    // check if there is any existing conversation between these users  
+    const existing_conversation = await OneToOneMessage.find({
+      participants: {$size: 2, $all: [to, from]}
+    }).populate("participants", "firstName lastName _id email status");
+
+    console.log(existing_conversation[0], "Existing Conversation")
+
+    // if no existing_conversation
+    if (existing_conversation.length == 0) {
+      let new_chat = await OneToOneMessage.create({
+        participants: [to, from],
+      });
+
+      new_chat = await OneToOneMessage.findById(new_chat._id).populate("participants", "firstName lastName _id email status");
+
+      console.log("new_chat", new_chat)
+      socket.emit("start_chat", new_chat);
+
+    }
+
+    // if there is any existing  conversation
+    else {
+      socket.emit("open_chat", existing_conversation[0]);
+    }
+
+  });
+  
+  socket.on("get_messages", async (data, callback) => {
+    const {messages} = await OneToOneMessage.findById(data.conversation_id).select("messages");
+    callback(messages);
+  })
   // Handle Text or link message
 
-  socket.on("text_message", (data) => {
+  socket.on("text_message", async (data) => {
     console.log("Recieved Message", data);
 
-    // data: {to, from, text}
+    // data: {to, from, message, conversation_id, type}
+    const {to, from, message, conversation_id, type} = data;
+
+    const to_user = await User.findById(to);
+    const from_user = await User.findById(from);
+
+    const new_message = {
+      to,
+      from,
+      type,
+      text: message,
+    }
 
     // create  a  new conversation if it dosen't exist or add new message to the messages list
-
+    const chat = await OneToOneMessage.findById(conversation_id);
+    chat.messages.push(new_message);
+    
     // save db
+    await chat.save({})
 
-    // emit incoming message -> to user
+    // emit new message -> to user
+    io.to(to_user.socket_id).emit("new_message", {
+      conversation_id,
+      message: new_message,
 
-    // emit outgoing message -> from user
+    })
+
+    // emit new message -> from user
+    io.to(from_user.socket_id).emit("new_message", {
+      conversation_id,
+      message: new_message,
+      
+    })
 
   });
 
@@ -173,3 +244,4 @@ process.on("unhandledRejection", (err) => {
     process.exit(1);
   });
 });
+
