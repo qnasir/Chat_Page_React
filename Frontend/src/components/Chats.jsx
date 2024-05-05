@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Box, IconButton, Stack, Typography, InputBase, styled, Button, Divider, Avatar, Badge } from '@mui/material'
 import { ArchiveBox, CircleDashed, MagnifyingGlass, Users } from 'phosphor-react'
 import { faker } from '@faker-js/faker';
@@ -8,6 +8,11 @@ import SearchIconWrapper from './Search/SearchIconWrapper';
 import StyledInputBase from './Search/StyledInputBase';
 import ChatElement from './Chats/ChatElement';
 import Friends from './Friends/Friends';
+import { connectSocket, socket } from '../socket';
+import { useDispatch, useSelector } from 'react-redux';
+import { FetchDirectConversations } from '../redux/slices/conversation';
+
+const user_id = window.localStorage.getItem("user_id")
 
 const ChatList = [
     {
@@ -97,6 +102,38 @@ function Chats() {
     const { isToggled } = useContext(AppContext)
     const [openDialog, setOpenDailog] = useState(false);
 
+    const dispatch = useDispatch();
+
+    const { conversations } = useSelector((state) => state.conversation.direct_chat);
+
+    const [isConnected, setIsConnected] = useState(false);
+
+    useEffect(() => {
+        if (!socket) {
+            connectSocket(user_id, () => {
+                setIsConnected(true);
+            });
+        } else {
+            socket.on('connect', () => setIsConnected(true));
+            socket.on('disconnect', () => setIsConnected(false));
+        }
+
+        return () => {
+            if (socket) {
+                socket.off('connect');
+                socket.off('disconnect');
+            }
+        };
+    }, [user_id]);
+
+    useEffect(() => {
+        if (isConnected) {
+            socket.emit("get_direct_conversations", { user_id }, (data) => {
+                dispatch(FetchDirectConversations({ conversations: data }))
+            });
+        }
+    }, [isConnected, user_id]);
+
     const handleCloseDialog = () => {
         setOpenDailog(false);
     }
@@ -144,19 +181,19 @@ function Chats() {
                             display: 'none'
                         }
                     }} >
-                        <Stack spacing={2.4}>
+                        {/* <Stack spacing={2.4}>
                             <Typography variant='subtitle2' sx={{ color: "#676767" }} >
                                 Pinned
                             </Typography>
                             {ChatList.filter((el) => el.pinned).map((el) => {
                                 return <ChatElement key={el.id} {...el} />
                             })}
-                        </Stack>
+                        </Stack> */}
                         <Stack spacing={2.4}>
                             <Typography variant='subtitle2' sx={{ color: "#676767" }} >
                                 All Chats
                             </Typography>
-                            {ChatList.filter((el) => !el.pinned).map((el) => {
+                            {conversations.filter((el) => !el.pinned).map((el) => {
                                 return <ChatElement key={el.id} {...el} />
                             })}
                         </Stack>
@@ -164,7 +201,7 @@ function Chats() {
                 </Stack>
             </Box>
 
-            {openDialog && (<Friends open={openDialog} handleClose={handleCloseDialog} />) }
+            {openDialog && (<Friends open={openDialog} handleClose={handleCloseDialog} />)}
 
             {/* Right */}
             {/* TODO => Reuse Conversation Components */}

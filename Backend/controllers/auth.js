@@ -125,7 +125,6 @@ exports.verifyOTP = async (req, res, next) => {
 // User Login Route
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(email, password)
 
   if (!email || !password) {
     res.status(400).json({
@@ -136,7 +135,6 @@ exports.login = async (req, res, next) => {
 
 
   const userDoc = await User.findOne({ email: email }).select("+password");
-  console.log(userDoc)
 
   if (
     !userDoc ||
@@ -161,7 +159,8 @@ exports.login = async (req, res, next) => {
 // Protect
 exports.protect = async (req, res, next) => {
   // 1) Getting token (JWT) and check if it's there
-
+  console.log("Hellp World Protect")
+  
   let token;
 
   if (
@@ -222,11 +221,9 @@ exports.forgotPassword = async (req, res, next) => {
   // Generate the random reset token
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false })
-  
-  console.log("resetToken", resetToken)
-  
+    
   try {
-    const resetURL = `https://chatappfrontend-xi.vercel.app/auth/new-password/?code=${resetToken}`;
+    const resetURL = `http://localhost:5173/auth/new-password/?code=${resetToken}`;
     // TODO => Send email with reset url
     mailService.sendEmail({
       from: "qnasir575@gmail.com",

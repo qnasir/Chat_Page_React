@@ -19,6 +19,7 @@ exports.updateMe = async (req, res, next) => {
 }
 
 exports.getUsers = async (req, res, next) => {
+    console.log("Hello World Backend")
     const all_users  = await User.find({
         verified: true,
     }).select("firstName lastName _id");
@@ -30,6 +31,8 @@ exports.getUsers = async (req, res, next) => {
         !this_user.friends.includes(user._id)  && 
         user._id.toString() !== req.user._id.toString() 
     );
+
+    // console.log(remaining_users)
 
     res.status(200).json({
         status: "success",

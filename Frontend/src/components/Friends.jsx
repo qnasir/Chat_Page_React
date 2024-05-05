@@ -6,20 +6,20 @@ import { socket } from '../socket';
 
 const StyledChatBox = styled(Box)(({theme}) => ({
     "&:hover": {
-        cursor: pointer,
+        cursor: "pointer",
     },  
 }));
+
+const user_id = window.localStorage.getItem("user_id");
 
 const UserComponent = ({ firstName, lastName, _id, online, img }) => {
 
     const theme = useTheme();
     const name = `${firstName} ${lastName}`
-    const user_id = window.localStorage.getItem("user_id");
 
     return (
         <>
             <StyledChatBox sx={{
-                width: "100%",
                 borderRadius: 1,
                 backgroundColor: theme.palette.background.paper
             }}
@@ -70,7 +70,6 @@ const FriendRequestComponent = ({ firstName, lastName, _id, online, img, id }) =
     return (
         <>
             <StyledChatBox sx={{
-                width: "100%",
                 borderRadius: 1,
                 backgroundColor: theme.palette.background.paper
             }}
@@ -121,7 +120,6 @@ const FriendComponent = ({ firstName, lastName, _id, online, img, id }) => {
     return (
         <>
             <StyledChatBox sx={{
-                width: "100%",
                 borderRadius: 1,
                 backgroundColor: theme.palette.background.paper
             }}
@@ -148,6 +146,7 @@ const FriendComponent = ({ firstName, lastName, _id, online, img, id }) => {
                     <Stack direction="row" spacing={2} alignItems={"center"}>
                         <IconButton onClick={() => {
                             // start a  new conversation
+                            socket.emit("start_conversation", {to: _id, from: user_id});
                         }} >
                             <Chat />
                         </IconButton>
