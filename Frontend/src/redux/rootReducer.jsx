@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import storage from "redux-persist/lib/storage";
-import appSliceReducer  from './slices/app.jsx'
+import appSliceReducer, {restoreState}  from './slices/app.jsx'
 import authReducer from "./slices/auth.jsx";
 import conversationReducer from "./slices/conversation.jsx";
 
@@ -10,7 +10,7 @@ const rootPersistConfig = {
     key: 'root',
     storage,
     keyPrefix: 'redux-',
-    whitelist: ['app'],
+    whitelist: ["app", "auth", "conversation"],
 }
 
 const rootReducer = combineReducers({
@@ -19,4 +19,4 @@ const rootReducer = combineReducers({
     conversation: conversationReducer,
 })
 
-export { rootPersistConfig, rootReducer }
+export { rootPersistConfig, rootReducer, restoreState }

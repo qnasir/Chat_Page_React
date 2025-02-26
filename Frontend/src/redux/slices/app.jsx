@@ -52,11 +52,14 @@ const appSlice = createSlice({
         selectConversation(state, action) {
             state.chat_type = "individual";
             state.room_id = action.payload.room_id;
+        },
+        restoreState(state, action) {
+            return {...initialState, ...state};
         }
     }
 });
 
-export const { toggleSidebar, selectConversation, updateSidebarType, openSnackbar, closeSnackbar, updateUsers, updateFriends, updateFriendRequests } = appSlice.actions;
+export const { restoreState, toggleSidebar, selectConversation, updateSidebarType, openSnackbar, closeSnackbar, updateUsers, updateFriends, updateFriendRequests } = appSlice.actions;
 export default appSlice.reducer;
 
 export function showSnackbar({ severity, message }) {
