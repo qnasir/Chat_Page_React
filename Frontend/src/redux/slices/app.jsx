@@ -1,3 +1,5 @@
+
+// slices/app.jsx
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "../../utils/axios";
 
@@ -16,10 +18,10 @@ const initialState = {
     friendRequests: [],
     chat_type: null,
     room_id: null,
-};
+}
 
 const appSlice = createSlice({
-    name: "app",
+    name: 'app',
     initialState,
     reducers: {
         toggleSidebar(state) {
@@ -29,105 +31,109 @@ const appSlice = createSlice({
             state.sidebar.type = action.payload;
         },
         openSnackbar(state, action) {
-            state.snackbar = {
-                open: true,
-                severity: action.payload.severity || "info",
-                message: action.payload.message || "",
-            };
+            state.snackbar.open =  true;
+            state.snackbar.severity = action.payload.severity;
+            state.snackbar.message = action.payload.message;
         },
-        closeSnackbar(state) {
-            state.snackbar = {
-                open: false,
-                severity: "info",
-                message: "",
-            };
+        closeSnackbar(state, action) {
+            state.snackbar.open =  false;
+            state.snackbar.severity = null;
+            state.snackbar.message = null;
         },
         updateUsers(state, action) {
-            state.users = action.payload.users || [];
+            state.users = action.payload.users;
         },
         updateFriends(state, action) {
-            state.friends = action.payload.friends || [];
+            state.friends = action.payload.friends;
         },
         updateFriendRequests(state, action) {
-            state.friendRequests = action.payload.requests || [];
+            state.friendRequests = action.payload.request;
         },
         selectConversation(state, action) {
             state.chat_type = "individual";
             state.room_id = action.payload.room_id;
-        },
-    },
+        }
+    }
 });
 
-export const {
-    toggleSidebar,
-    selectConversation,
-    updateSidebarType,
-    openSnackbar,
-    closeSnackbar,
-    updateUsers,
-    updateFriends,
-    updateFriendRequests,
-} = appSlice.actions;
-
+export const { toggleSidebar, selectConversation, updateSidebarType, openSnackbar, closeSnackbar, updateUsers, updateFriends, updateFriendRequests } = appSlice.actions;
 export default appSlice.reducer;
 
-// ✅ Show Snackbar with Auto Close
-export const showSnackbar = ({ severity, message }) => async (dispatch) => {
-    try {
-        dispatch(openSnackbar({ severity, message }));
+export function showSnackbar({ severity, message }) {
+
+    return async (dispatch, getState) => {
+
+        try {
+            dispatch(openSnackbar({
+                message,
+                severity,
+            })
+        );
 
         setTimeout(() => {
-            dispatch(closeSnackbar());
-        }, 4000); // ✅ Correct timeout syntax
-    } catch (error) {
-        console.error("Snackbar Error:", error);
-    }
-};
+            dispatch(closeSnackbar())
+        }, 4000)
+        } catch (error) {
+            console.log(error)
+        }
 
-// ✅ Fetch Users
-export const FetchUsers = () => async (dispatch, getState) => {
-    const token = getState().auth.token;
-    try {
-        const response = await axios.get("/user/get-users", {
+    }
+
+}
+
+export const FetchUsers = () => {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token;
+        try {
+            const response = await axios.get("/user/get-users", {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            dispatch(updateUsers({ users: response.data.data }))
+        } catch (error) {
+            console.log("Fetching Users Error", error)
+        }
+    
+
+    }
+}
+
+export const FetchFriends = () => {
+    return async (dispatch, getState) => {
+        await axios.get("/user/get-friends", {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        dispatch(updateUsers({ users: response.data.data }));
-    } catch (error) {
-        console.error("Fetching Users Error:", error);
+                Authorization: `Bearer ${getState().auth.token}`
+            }
+        }).then((response) => {
+            console.log(response)
+            dispatch(updateFriends({ friends: response.data.data }))
+        }).catch((error) => {
+            console.log(error)
+        })
     }
-};
+}
 
-// ✅ Fetch Friends
-export const FetchFriends = () => async (dispatch, getState) => {
-    try {
-        const response = await axios.get("/user/get-friends", {
+export const FetchFriendRequest = () => {
+    return async (dispatch, getState) => {
+        await axios.get("/user/get-friend-requests", {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${getState().auth.token}`,
-            },
-        });
-        dispatch(updateFriends({ friends: response.data.data }));
-    } catch (error) {
-        console.error("Fetching Friends Error:", error);
+                Authorization: `Bearer ${getState().auth.token}`
+            }
+        }).then((response) => {
+            console.log(response)
+            dispatch(updateFriendRequests({ request: response.data.data }))
+        }).catch((error) => {
+            console.log(error)
+        })
     }
-};
+}
 
-// ✅ Fetch Friend Requests
-export const FetchFriendRequest = () => async (dispatch, getState) => {
-    try {
-        const response = await axios.get("/user/get-friend-requests", {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${getState().auth.token}`,
-            },
-        });
-        dispatch(updateFriendRequests({ requests: response.data.data }));
-    } catch (error) {
-        console.error("Fetching Friend Requests Error:", error);
+export const SelectConversation = ({room_id}) => {
+    return (dispatch, getState) => {
+        dispatch(selectConversation({room_id}));
     }
-};
-
-//
+}
