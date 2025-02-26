@@ -10,8 +10,7 @@ const rootPersistConfig = {
     key: 'root',
     storage,
     keyPrefix: 'redux-',
-    whiteList: [],
-    blackList: [],
+    whitelist: ['app'],
 }
 
 const rootReducer = combineReducers({

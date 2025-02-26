@@ -37,8 +37,8 @@ const appSlice = createSlice({
         },
         closeSnackbar(state, action) {
             state.snackbar.open =  false;
-            state.snackbar.severity = null;
-            state.snackbar.message = null;
+            state.snackbar.severity = "info";
+            state.snackbar.message = "";
         },
         updateUsers(state, action) {
             state.users = action.payload.users;
@@ -60,9 +60,7 @@ export const { toggleSidebar, selectConversation, updateSidebarType, openSnackba
 export default appSlice.reducer;
 
 export function showSnackbar({ severity, message }) {
-
     return async (dispatch, getState) => {
-
         try {
             dispatch(openSnackbar({
                 message,
@@ -74,7 +72,7 @@ export function showSnackbar({ severity, message }) {
             dispatch(closeSnackbar())
         }, 4000)
         } catch (error) {
-            console.log(error)
+            console.log("Snackbar Error: ", error)
         }
 
     }
