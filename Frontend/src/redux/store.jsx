@@ -16,7 +16,8 @@ const store = configureStore({
 const persistor = persistStore(store);
 
 persistor.subscribe(() => {
-    if (persistor.getState()._persist.rehydrated) {
+    const state = store.getState(); // Get the current state
+    if (state._persist && state._persist.rehydrated) {
         store.dispatch(restoreState());
     }
 });
