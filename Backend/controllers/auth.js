@@ -15,7 +15,6 @@ const signToken = (userId) => jwt.sign({ userId }, process.env.JWT_SECRET);
 exports.register = async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
 
-
   const filteredBody = filterObj(req.body, "firstName", "lastName", "email", "password");
 
   // check if a verified user with given email exists
@@ -26,29 +25,33 @@ exports.register = async (req, res, next) => {
       status: "error",
       message: "Email already in use, Please login.",
     });
+    return
   } else if (existing_user) {
-    await User.findOneAndUpdate(
+    const updatedUser = await User.findOneAndUpdate(
       { email: email },
-      { filteredBody },
+      { ...filteredBody },
       { new: true, validateModifiedOnly: true }
     );
 
     // generate OTP and send email to user
-    req.userId = existing_user._id;
-    next();
+    req.userId = updatedUser ? updatedUser._id : null;
+    return next();
   } else {
     // If user record is not available in our DB
     const new_user = await User.create(filteredBody);
 
     // generate OTP and send email to user
     req.userId = new_user._id;
-    next();
+    return next();
   }
 };
 
 // User generating OTP
 exports.sendOTP = async (req, res, next) => {
   const { userId } = req;
+  if (!userId) {
+    return res.status(400).json({ status: "error", message: "Invalid User ID" })
+  }
   const new_otp = otpGenerator.generate(6, {
     lowerCaseAlphabets: false,
     upperCaseAlphabets: false,
@@ -56,6 +59,7 @@ exports.sendOTP = async (req, res, next) => {
   });
 
   const otp_expiry_time = Date.now() + 10 * 60 * 1000; // 10 mins after otp is send
+
 
   const user = await User.findByIdAndUpdate(userId, {
     otp_expiry_time: otp_expiry_time,
@@ -65,17 +69,16 @@ exports.sendOTP = async (req, res, next) => {
 
   await user.save({ new: true, validateModifiedOnly: true });
 
-
   // TODO => Send Mail
   mailService.sendEmail({
-    from: "qnasir575@gmail.com",
+    from: "qnasir57575@gmail.com",
     to: user.email,
     subject: "Verification OTP",
     html: otp(user.firstName, new_otp),
     attachments: [],
   });
 
-  res.status(200).json({
+  return res.status(200).json({
     status: "success",
     message: "OTP Sent Successfully!",
   });
@@ -93,14 +96,14 @@ exports.verifyOTP = async (req, res, next) => {
   });
 
   if (!user) {
-    res.status(400).json({
+    return res.status(400).json({
       status: "error",
       message: "Email is not valid or OTP expired",
     });
   }
 
   if (!(await user.correctOTP(otp, user.otp)))
-    res.status(400).json({
+    return res.status(400).json({
       status: "error",
       message: "OTP is incorrect",
     });
@@ -114,7 +117,7 @@ exports.verifyOTP = async (req, res, next) => {
 
   const token = signToken(user._id);
 
-  res.status(200).json({
+  return res.status(200).json({
     status: "success",
     message: "OTP verified successfully!",
     token,
@@ -127,7 +130,7 @@ exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res.status(400).json({
+    return res.status(400).json({
       status: "error",
       message: "Both email and password are required",
     });
@@ -140,7 +143,7 @@ exports.login = async (req, res, next) => {
     !userDoc ||
     !(await userDoc.correctPassword(password, userDoc.password))
   ) {
-    res.status(400).json({
+    return res.status(400).json({
       status: "Error",
       message: "Email or password is incorrect",
     });
@@ -148,7 +151,7 @@ exports.login = async (req, res, next) => {
 
   const token = signToken(userDoc._id);
 
-  res.status(200).json({
+  return res.status(200).json({
     status: "success",
     message: "Logged in successfully",
     token,
@@ -211,11 +214,10 @@ exports.forgotPassword = async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
-    res.status(400).json({
+    return res.status(400).json({
       status: "Error",
       message: "There is no user with given email address",
     });
-    return;
   }
 
   // Generate the random reset token

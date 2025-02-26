@@ -93,10 +93,18 @@ export function ForgotPassword(formValues) {
                     "Content-Type": "application/json",
                 }
             });
-            console.log("Response", response)
+            dispatch(showSnackbar({
+                severity: "success",
+                message: response.data.message
+            }))
         } catch (error) {
-            console.log(error)
+            dispatch(showSnackbar({
+                severity: "error",
+                message: `${error.response.data.message}`
+            }))
             dispatch(setError("Failed to reset password"))
+        }  finally {
+            dispatch(setLoading(false));
         }
     }
 }
@@ -124,6 +132,7 @@ export function NewPassword(formValues) {
 }
 
 export function RegisterUser(formValues) {
+    console.log("Form ", formValues)
     return async (dispatch, getState) => {
         dispatch(setLoading(true));
         try {
