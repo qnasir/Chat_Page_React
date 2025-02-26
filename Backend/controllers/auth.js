@@ -225,7 +225,7 @@ exports.forgotPassword = async (req, res, next) => {
   await user.save({ validateBeforeSave: false })
     
   try {
-    const resetURL = `http://localhost:5173/auth/new-password/?code=${resetToken}`;
+    const resetURL = `https://chatappfrontend-xi.vercel.app/auth/new-password/?code=${resetToken}`;
     // TODO => Send email with reset url
     mailService.sendEmail({
       from: "qnasir575@gmail.com",
