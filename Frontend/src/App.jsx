@@ -18,7 +18,7 @@ function App() {
 
   const dispatch = useDispatch();
 
-  const { open, message, severity } = useSelector((state) => state.app.snackbar)
+  const { open = false, message = "", severity = "info" } = useSelector((state) => state.app.snackbar) || {};
 
   const location = useLocation();
 
