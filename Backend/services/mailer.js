@@ -1,48 +1,45 @@
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
 
-dotenv.config({ path: "../config.env" });
+// Load environment variables
+dotenv.config({ path: "./config.env" }); // Ensure this path is correct
 
-async function main() {
-
-    const config = {
-        service: 'gmail',
-        auth: {
-            user: 'qnasir575@gmail.com',
-            pass: 'jeff kavv dwmw hxtb',
-        }
+// Email configuration
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER, // Use env variable
+        pass: process.env.EMAIL_PASS, // Use env variable
     }
+});
 
-    const transporter = nodemailer.createTransport(config)
 
-    const sendMail = async ({ to, sender, subject, html, attachments, text }) => {
-        try {
-            const from = sender || "qnasir575@gmail.com";
-            const msg = {
-                to, // email of recipient
-                from, // verified sender
-                subject,
-                html,
-                text,
-                attachments,
-            };
+const sendMail = async ({ to, sender, subject, html, attachments, text }) => {
+    try {
+        const msg = {
+            to, // Recipient email
+            from: process.env.EMAIL_USER, // Verified sender
+            subject,
+            html,
+            text,
+            attachments,
+        };
 
-            let info = await transporter.sendMail(msg);
-            return info;
-        } catch (error) {
-            console.error(error);
-            throw error; // rethrow or handle differently if needed
-        }
-    };
-
-    exports.sendEmail = async (args) => {
-        if (process.env.NODE_ENV === "development") {
-            console.log("Development mode - Email not sent.");
-            return Promise.resolve("Development mode - Email not sent.");
-        } else {
-            return sendMail(args);
-        }
+        let info = await transporter.sendMail(msg);
+        return info;
+    } catch (error) {
+        console.error(error);
+        throw error; // Rethrow error for handling
     }
-}
+};
 
-main().catch(console.error);
+// Export function properly
+exports.sendEmail = async (args) => {
+    if (process.env.NODE_ENV === "development") {
+        console.log("Development mode - Email not sent.");
+        return Promise.resolve("Development mode - Email not sent.");
+    } else {
+        return sendMail(args);
+    }
+};
+
