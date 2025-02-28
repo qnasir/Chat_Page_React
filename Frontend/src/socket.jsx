@@ -3,7 +3,7 @@ import io from "socket.io-client";
 let socket;
 
 const connectSocket = (user_id, onConnect) => {
-    socket = io("https://chatappbackend-olive.vercel.app", {
+    socket = io("https://chat-app-backend-jt1c.onrender.com", {
         query: `user_id=${user_id}`
     });
 
