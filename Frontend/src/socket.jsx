@@ -3,8 +3,12 @@ import io from "socket.io-client";
 let socket;
 
 const connectSocket = (user_id, onConnect) => {
+    if (!user_id) {
+        console.log("User ID is missing. Socket connection not started.");
+        return;
+    }
     socket = io("https://chatappbackend-olive.vercel.app", {
-        query: `user_id=${user_id}`
+        query: {user_id}
     });
 
     socket.on('connect', () => {
