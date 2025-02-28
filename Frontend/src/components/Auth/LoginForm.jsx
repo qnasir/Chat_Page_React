@@ -22,7 +22,7 @@ const LoginForm = () => {
     })
 
     const defaultValues = {
-        email: "demo@gmail.com",
+        email: "qnasir575@gmail.com",
         password: "demo@1234"
     }
 
