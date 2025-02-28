@@ -22,7 +22,7 @@ app.use(xssClean());
 // app.use(cors());
 
 app.use(cors({
-  origin: ['https://chatappfrontend-xi.vercel.app/auth/login','http://localhost:5173'],
+  origin: ['https://chatappfrontend-xi.vercel.app','http://localhost:5173'],
   methods: 'GET, POST, PUT, DELETE',
   allowedHeaders: 'Content-Type',
   credentials: true,
