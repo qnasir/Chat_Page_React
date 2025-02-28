@@ -3,7 +3,7 @@ import io from "socket.io-client";
 let socket;
 
 const connectSocket = (user_id, onConnect) => {
-    socket = io("http://localhost:8000", {
+    socket = io("https://chatappbackend-olive.vercel.app", {
         query: `user_id=${user_id}`
     });
 
