@@ -84,7 +84,7 @@ const NewPasswordForm = () => {
 
         <Button fullWidth color='inherit' size='large' type='submit' variant='contained' sx={{ bgcolor: 'text.primary', color: "#fff", '&:hover': {
             color: "#000"
-        }}} startIcon={isVerifying ? <CircularProgress size={20} color="inherit" /> : null}    >
+        }}} startIcon={isResetting ? <CircularProgress size={20} color="inherit" /> : null}    >
             {isResetting ? "Submitting..." : "Submit"}
         </Button>
 
