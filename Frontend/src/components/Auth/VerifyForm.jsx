@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import * as Yup from 'yup'
 import { useForm } from 'react-hook-form'
 import FormProvider from './hook-form/FormProvider'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Stack } from '@mui/system'
-import { Button  } from '@mui/material'
+import { Button, CircularProgress  } from '@mui/material'
 import { useSearchParams } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux"
 import { VerifyEmail } from '../../redux/slices/auth'
@@ -13,9 +13,10 @@ import RHFCodes from './hook-form/RHFCodes'
 const VerifyForm = () => {
 
     const [queryParameters] = useSearchParams();
-
     const dispatch = useDispatch();
     const email = useSelector((state) => state.auth.email)
+
+    const [isVerifying, setIsVerifying] = useState(false);
 
     const VerifyCodeSchema = Yup.object().shape({
         code1: Yup.string().required("Code is required"),
@@ -44,21 +45,25 @@ const VerifyForm = () => {
     const { reset, setError, handleSubmit, formState: { errors, isSubmitting, isSubmitSuccessful } } = methods
 
     const onSubmit = async (data) => {
+        console.log("Hello")
+        setIsVerifying(true);
         // return
         try {
             //submit data to backend
-            dispatch(VerifyEmail({
+            await dispatch(VerifyEmail({
                 email,
                 otp: `${data.code1}${data.code2}${data.code3}${data.code4}${data.code5}${data.code6}`
-            }))
+            }));
 
         } catch (error) {
             console.log(error)
-            // reset()
+            reset()
             setError("afterSubmit", {
                 ...error,
                 message: error.message
             })
+        } finally {
+            setIsVerifying(false);
         }
     }
 
@@ -75,8 +80,8 @@ const VerifyForm = () => {
                     bgcolor: 'text.primary', color: "#fff", '&:hover': {
                         color: "#000"
                     }
-                }} >
-                    Verify
+                }} startIcon={isVerifying ? <CircularProgress size={20} color="inherit" /> : null} >
+                    {isVerifying ? "Verifying..." : "Verify"}
                 </Button>
 
             </Stack>

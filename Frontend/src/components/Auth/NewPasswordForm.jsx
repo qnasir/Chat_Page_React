@@ -5,7 +5,7 @@ import FormProvider from './hook-form/FormProvider'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { RHFTextField } from './hook-form'
 import { Stack } from '@mui/system'
-import { Alert, Button, IconButton, InputAdornment, Link } from '@mui/material'
+import { Alert, Button, IconButton, InputAdornment, Link, CircularProgress } from '@mui/material'
 import { Link as RouterLink, useSearchParams } from 'react-router-dom'
 import { Eye, EyeSlash } from 'phosphor-react'
 import { useDispatch } from "react-redux"
@@ -18,6 +18,7 @@ const NewPasswordForm = () => {
     const dispatch = useDispatch();
 
     const [showPassword, setShowPassword] = useState(false)
+    const [isResetting, setIsResetting] = useState(false);
 
     const NewPasswordSchema = Yup.object().shape({
         password: Yup.string().min(6, 'Password must be at least 6 characters').required("Password is required"),
@@ -37,9 +38,10 @@ const NewPasswordForm = () => {
     const { reset, setError, handleSubmit, formState: { errors, isSubmitting, isSubmitSuccessful } } = methods
 
     const onSubmit = async (data) => {
+        setIsResetting(true);
         try {
             //submit data to backend
-            dispatch(NewPassword({...data, token: queryParameters.get("code")}))
+            await dispatch(NewPassword({...data, token: queryParameters.get("code")}));
 
         } catch (error) {
             console.log(error)
@@ -48,6 +50,8 @@ const NewPasswordForm = () => {
                 ...error,
                 message: error.message
             })
+        } finally {
+            setIsResetting(false);
         }
     }
 
@@ -80,8 +84,8 @@ const NewPasswordForm = () => {
 
         <Button fullWidth color='inherit' size='large' type='submit' variant='contained' sx={{ bgcolor: 'text.primary', color: "#fff", '&:hover': {
             color: "#000"
-        }  }} >
-            Submit
+        }}} startIcon={isVerifying ? <CircularProgress size={20} color="inherit" /> : null}    >
+            {isResetting ? "Submitting..." : "Submit"}
         </Button>
 
         </Stack>

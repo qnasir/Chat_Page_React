@@ -124,8 +124,16 @@ export function NewPassword(formValues) {
                 isLoggedIn: true,
                 token: response.data.token
             }));
+            dispatch(showSnackbar({
+                severity: "success",
+                message: response.data.message,
+            }))
         } catch (error) {
             console.log(error)
+            dispatch(showSnackbar({
+                severity: "error",
+                message: `${error.response.data.message}`
+            }))
             dispatch(setError('Failed to set new password'))
         }
     }
@@ -141,23 +149,25 @@ export function RegisterUser(formValues) {
                     "Content-Type": "application/json"
                 }
             })
-            console.log(response)
             dispatch(updateRegisterEmail({ email: formValues.email }));
             dispatch(setLoading(false));
             dispatch(setError(false));
             if (!getState().auth.error) {
-                window.location.href = "/auth/verify"
+                const email = encodeURIComponent(formValues.email);
+                window.location.href = `/auth/verify?email=${email}`;
             }
         } catch (error) {
             console.log(error)
+            dispatch(showSnackbar({
+                severity: "error",
+                message: `${error.response.data.message}`
+            }))
             dispatch(setError("Failed to register"))
         }
     }
 }
 
 export function VerifyEmail(formValues) {
-
-    console.log(formValues)
    
     return async (dispatch, getState) => {
 
@@ -168,16 +178,22 @@ export function VerifyEmail(formValues) {
                     "Content-Type": "application/json"
                 }
             })
-            console.log("Response", response)
             dispatch(logIn({
                 isLoggedIn: true,
                 token: response.data.token
             }));
 
             window.localStorage.setItem("user_id", response.data.user_id);
-            // window.location.href
+            dispatch(showSnackbar({
+                severity: "success",
+                message: response.data.message,
+            }))
         } catch (error) {
             console.log(error)
+            dispatch(showSnackbar({
+                severity: "error",
+                message: `${error.response.data.message}`
+            }))
             dispatch(setError("Failed to verify"))
         }
     }
