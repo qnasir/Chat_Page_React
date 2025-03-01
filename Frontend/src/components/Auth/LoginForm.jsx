@@ -45,7 +45,7 @@ const LoginForm = () => {
         if (!isSocketConnected) return;
         try {
             //submit data to backend
-            await dispatch(loginUser(data))
+            await dispatch(loginUser(data));
         } catch (error) {
             console.log(error)
             reset()

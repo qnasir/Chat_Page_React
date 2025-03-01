@@ -1,17 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import * as Yup from 'yup'
 import { useForm } from 'react-hook-form'
 import FormProvider from './hook-form/FormProvider'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { RHFTextField } from './hook-form'
 import { Stack } from '@mui/system'
-import { Alert, Button } from '@mui/material'
+import { Alert, Button, CircularProgress } from '@mui/material'
 import { useDispatch } from 'react-redux'
 import { ForgotPassword } from '../../redux/slices/auth'
 
 const ResetPasswordForm = () => {
 
     const dispatch = useDispatch()
+    const [isLoading, setIsLoading] = useState(false);
 
     const ResetPasswordSchema = Yup.object().shape({
         email: Yup.string().required("Email is required").email("Email must be a valid email address"),
@@ -29,9 +30,10 @@ const ResetPasswordForm = () => {
     const { reset, setError, handleSubmit, formState: { errors, isSubmitting, isSubmitSuccessful } } = methods
 
     const onSubmit = async (data) => {
+        setIsLoading(true);
         try {
             //submit data to backend
-            dispatch(ForgotPassword(data))
+            await dispatch(ForgotPassword(data));
 
         } catch (error) {
             console.log(error)
@@ -40,6 +42,8 @@ const ResetPasswordForm = () => {
                 ...error,
                 message: error.message
             })
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -55,8 +59,8 @@ const ResetPasswordForm = () => {
                 bgcolor: 'text.primary', color: "#fff", '&:hover': {
                     color: "#000"
                 }
-            }} >
-                Send Request
+            }} disabled={isLoading} startIcon={isLoading ? <CircularProgress size={20} color='inherit' /> : null} >
+                {isLoading ? "Sending..." : "Send Request"}
             </Button>
             
             </Stack>
